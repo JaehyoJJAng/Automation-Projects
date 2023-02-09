@@ -64,4 +64,6 @@
 
 | 주차 | 날짜 | 프로젝트 |  <img src="https://avatars.githubusercontent.com/u/91415701?v=4" width="50" height="50"> </br> JaehyoJJAng 
 | :--: | :--------------------------: | :--: | :-----------------: |
-| 1주차 | 02.11 | 네이버 크롤링과 함께하는 웹 크롤링 맛보기 | X |
+| 1주차 | 02.08 | requests User-Agent 추가 | O |
+| 1주차 | 02.09 | 네이버 View Tab 검색결과 크롤링 #1 | O |
+| 1주차 | 02.09 | 네이버 View Tab 검색결과 크롤링 #2 | O |
