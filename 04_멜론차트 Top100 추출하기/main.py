@@ -25,7 +25,7 @@ class MelonTop100:
                 soup : bs = self.get_soup_obj(response=response)
                 
                 # Get Content Length
-                content_length : int = len(soup.select('form#frm div.d_song_list table > tbody > tr'))
+                content_length : int = len(soup.find_all(class_=['lst50','lst100']))
                 
                 # Song Count
                 count : int = 1
@@ -36,7 +36,7 @@ class MelonTop100:
                     album_data_dict : Dict[str,str] = dict()
                     
                     # Get Contents
-                    contents : list = soup.select('form#frm div.d_song_list table > tbody > tr')
+                    contents : list = soup.find_all(class_=['lst50','lst100'])
                     
                     # Get Song Title
                     title = contents[idx].select_one('div.ellipsis.rank01')
