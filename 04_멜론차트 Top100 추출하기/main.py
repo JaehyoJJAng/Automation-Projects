@@ -103,13 +103,8 @@ class MelonTop100:
         return album_data_list
 
     def get_id(self,song_num_text:str)-> int:
-        song_num : List[int] = list()
-        for num in song_num_text:
-            # text.isdigit() = True or False
-            if num.isdigit(): 
-                song_num.append(num)
-        return int(''.join(song_num))
-    
+        return  int(''.join([num for num in song_num_text if num.isdigit()]))
+
 def main()-> None:
     # Create MelonTop100 Instance
     melon : MelonTop100 = MelonTop100()
