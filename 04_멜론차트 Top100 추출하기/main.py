@@ -52,7 +52,7 @@ class MelonTop100:
                     if artist == None:
                         artist = '-'
                     else:
-                        artist_channel_id = self.get_id(tag=artist)
+                        artist_channel_id = self.get_id(song_num_text=artist.select_one('a').attrs['href'])
                         artist = artist.text.strip()
                     
                     # Get Album & Get Album ID
@@ -61,7 +61,7 @@ class MelonTop100:
                     if album == None:
                         album = '-'
                     else:
-                        album_id = self.get_id(tag=album)
+                        album_id = self.get_id(song_num_text=album.select_one('a').attrs['href'])
                         album = album.text.strip()
                     
                     # Get Thumbnail
@@ -102,8 +102,13 @@ class MelonTop100:
         # Return Data
         return album_data_list
 
-    def get_id(self,tag)-> int:
-        return int(re.sub('[^0-9]','',tag.select_one('a').attrs['href']))
+    def get_id(self,song_num_text:str)-> int:
+        song_num : List[int] = list()
+        for num in song_num_text:
+            # text.isdigit() = True or False
+            if num.isdigit(): 
+                song_num.append(num)
+        return int(''.join(song_num))
     
 def main()-> None:
     # Create MelonTop100 Instance
