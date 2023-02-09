@@ -1,8 +1,34 @@
 from bs4 import BeautifulSoup as bs
 from typing import List,Dict
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from typing import Dict,List,Union
+from bs4 import BeautifulSoup as bs
 import requests as rq
 import os
 import urllib.parse as rep
+
+class ChromeDriver:
+    @staticmethod
+    def return_driver()-> webdriver.Chrome:
+        # options 객체
+        chrome_options : Options = Options()
+
+        # headless Chrome 선언
+        chrome_options.add_argument('--headless')
+
+        # 브라우저 꺼짐 방지
+        chrome_options.add_experimental_option('detach', True)
+
+        # 불필요한 에러메시지 없애기
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        
+        browser : webdriver.Chrome = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=chrome_options)    
+        return browser
 
 class ViewTab:
     def __init__(self) -> None:
@@ -48,6 +74,7 @@ class ViewTab:
         # Return Data
         return view_data_list
     
+    def 
     def input_keyword(self)-> str:
         os.system('clear')
         while True:
@@ -62,7 +89,9 @@ def main()-> None:
     # ViewTab Instance
     view_tab : ViewTab = ViewTab()
     
+    # Run Method    
     view_tab.run()
+    
 
 if __name__ == '__main__':
     main()
