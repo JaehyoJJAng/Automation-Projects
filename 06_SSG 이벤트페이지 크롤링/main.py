@@ -73,7 +73,12 @@ class SSGEvent:
             if link == None:
                 link = '-'
             else:
+                # startswidh() 함수로 URL 유효성 체크
                 link = link.attrs['href']
+                if link.startswith('https'):
+                    pass
+                else:
+                    link = 'https://www.ssg.com' + link
             
             # Save Data
             data_dict['title'] = title
