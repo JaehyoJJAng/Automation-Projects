@@ -4,6 +4,7 @@ from typing import Dict,List
 import requests as rq
 import os
 import urllib.parse as rep
+import time
 
 class Coupang:
     def __init__(self) -> None:
@@ -16,6 +17,8 @@ class Coupang:
         # Set Page Count
         self.page_count : int = self.input_page()
         
+        # Set Prod Count
+        self.prod_count : int = 1
         
     @staticmethod
     def get_soup_obj(response:rq.Response)-> bs:
@@ -38,14 +41,78 @@ class Coupang:
             tag : str = 'ul#productList > li'
             
             # Get Prod Length
-            content_length : int = self.get_prod_length(soup=soup,tag=tag)
-            print(content_length)
-    
+            prod_length : int = self.get_prod_length(soup=soup,tag=tag)
+            
+            # Get Prod Content
+            self.get_prod(soup=soup,prod_length=prod_length,tag=tag)
+            
     def get_prod_length(self,soup:bs,tag:str)-> int:
         return len(soup.select(tag))
     
-    def get_prod(self):
-        pass
+    def get_prod(self,soup:bs,prod_length:int,tag:str):        
+        for idx in range(prod_length):
+            # Get Products
+            prods : list = soup.select(tag)
+            
+            # Ad Check
+            ad = prods[idx].select_one('span.ad-badge-text')
+            if ad:
+                continue
+            
+            # Get Thumbnail
+            thumbnail = prods[idx].select_one('img.search-product-wrap-img')
+            if thumbnail == None:
+                continue
+            else:
+                # attrs : 해당 키가 없으면 에러
+                # get : 해당 키가 없으면 None return
+                if thumbnail.get('data-img-src') == None:
+                    thumbnail = 'https:' + thumbnail.attrs['src']
+                else:
+                    thumbnail = 'https:' + thumbnail.get('data-img-src')
+            
+            # Get Title
+            title = prods[idx].select_one('div.name')
+            if title == None:
+                title = '-'
+            else:
+                title = title.text.strip()
+            
+            # Get Prod Link
+            link = prods[idx].select_one('a.search-product-link')
+            if link == None:
+                link = '-'
+            else: 
+                link = 'https://www.coupang.com' + link.attrs['href']
+            
+            # Get Price
+            price = prods[idx].select_one('strong.price-value')
+            if price == None:
+                price = 0
+            else:
+                # isdigt() 함수 활용하여 ',' 제거 (숫자만 추출))
+                price = ''.join([num for num in price.text.strip() if num.isdigit()])
+            
+            # Get rating
+            rating = prods[idx].select_one('em.rating')
+            if rating == None:
+                rating = 0
+            else:
+                rating = float(rating.text.strip())
+                        
+            # Get Reviews 
+            reviews = prods[idx].select_one('span.rating-total-count')
+            if reviews == None:
+                reviews = 0
+            else:
+                # isdigit() 함수 활용하여 '()' 제거 (숫자만 추출)
+                reviews = ''.join([num for num in reviews.text.strip() if num.isdigit()])
+            
+            # Print Data
+            print(f'{self.prod_count}\t{thumbnail}\n')
+            
+            # Prod Count Add
+            self.prod_count += 1
         
     def input_page(self)-> int:
         os.system('clear')
