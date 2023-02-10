@@ -1,6 +1,6 @@
 from config.config import get_headers
 from bs4 import BeautifulSoup as bs
-from typing import Dict,List
+from typing import Dict,List,Union
 import requests as rq
 import os
 import urllib.parse as rep
@@ -24,15 +24,15 @@ class Coupang:
     def get_soup_obj(response:rq.Response)-> bs:
         return bs(response.text,'html.parser')
     
-    def run(self):
+    def run(self)-> List[List[Dict[str,Union[str,int,float]]]]:
         # Set URLS
         urls : List[str] = [f'https://www.coupang.com/np/search?q={rep.quote_plus(self.keyword)}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=rocket,rocket_wow,coupang_global&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page={self.page_count}&rocketAll=true&searchIndexingToken=1=6&backgroundColor=' for page in range(1,self.page_count + 1)]
         
         # Session
         with rq.Session() as session:
-            [self.fetch(session,url=url) for url in urls]
+            return [self.fetch(session,url=url) for url in urls]
 
-    def fetch(self,session:rq.Session,url:str):
+    def fetch(self,session:rq.Session,url:str)-> List[Dict[str,Union[str,int,float]]]:
         with session.get(url=url,headers=self._headers) as response:
             # Get Soup Object
             soup : bs = self.get_soup_obj(response=response)
@@ -44,13 +44,22 @@ class Coupang:
             prod_length : int = self.get_prod_length(soup=soup,tag=tag)
             
             # Get Prod Content
-            self.get_prod(soup=soup,prod_length=prod_length,tag=tag)
-            
+            data_list : List[Dict[str,Union[str,int,float]]] = self.get_prod(soup=soup,prod_length=prod_length,tag=tag)
+        
+        # return data_list
+        return data_list
+    
     def get_prod_length(self,soup:bs,tag:str)-> int:
         return len(soup.select(tag))
     
-    def get_prod(self,soup:bs,prod_length:int,tag:str):        
+    def get_prod(self,soup:bs,prod_length:int,tag:str)-> List[Dict[str,Union[str,int,float]]]:
+        # Set Data List
+        data_list : List[Dict[str,Union[str,int,float]]] = list()
+        
         for idx in range(prod_length):
+            # Set Data Dict
+            data_dict : Dict[str,Union[str,int,float]] = dict()
+            
             # Get Products
             prods : list = soup.select(tag)
             
@@ -96,7 +105,7 @@ class Coupang:
             # Get rating
             rating = prods[idx].select_one('em.rating')
             if rating == None:
-                rating = 0
+                rating = 0.0
             else:
                 rating = float(rating.text.strip())
                         
@@ -108,12 +117,41 @@ class Coupang:
                 # isdigit() 함수 활용하여 '()' 제거 (숫자만 추출)
                 reviews = ''.join([num for num in reviews.text.strip() if num.isdigit()])
             
+            # Download Thumbnail
+            self.download_thumbnail(thumbnail=thumbnail,title=title)
+            
+            # Save Data
+            data_dict['prod_count'] = self.prod_count
+            data_dict['title'] = title
+            data_dict['price'] = price
+            data_dict['rating'] = rating
+            data_dict['reviews'] = reviews
+            data_dict['link'] = link
+            data_dict['thumbnail'] = thumbnail
+            data_list.append(data_dict)
+            
             # Print Data
-            print(f'{self.prod_count}\t{thumbnail}\n')
+            print(f'{data_dict}\n')
             
             # Prod Count Add
             self.prod_count += 1
         
+        # Return data
+        return data_list
+    
+    def download_thumbnail(self,thumbnail:str,title:str):
+        save_path : str = os.path.abspath(self.keyword)
+        file_name : str = thumbnail.split('/')[-1]
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+        
+        with rq.Session() as session: 
+            with session.get(url=thumbnail) as response:
+                if response.ok:
+                    with open(os.path.join(save_path,file_name),'wb') as fp:
+                        fp.write(response.content)
+                        print(f'이미지 저장완료!\t-> {os.path.join(save_path,file_name)}')
+    
     def input_page(self)-> int:
         os.system('clear')
         while True:
