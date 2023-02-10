@@ -1,0 +1,9 @@
+{
+    "authority": "www.coupang.com",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "accept-encoding:" : "gzip, deflate, br",
+    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cookie" : "PCID=12424814206801578749734; x-coupang-origin-region=KOREA; _fbp=fb.1.1670209935116.1136322186; gd1=Y; _ga=GA1.2.1277632776.1670985639; sid=3762254d97ae4ef78ff90e9e1222ac536ee46800; X-CP-PT-locale=ko_KR; x-coupang-target-market=KR;",
+    "sec-ch-ua-platform" : "macOS",
+    "user-agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Whale/3.18.154.13 Safari/537.36"
+}
