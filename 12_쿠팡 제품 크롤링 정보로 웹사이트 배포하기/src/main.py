@@ -1,4 +1,4 @@
-from config.config import get_headers
+from src.config.config import get_headers
 from bs4 import BeautifulSoup as bs
 from typing import Dict,List,Union
 import requests as rq
