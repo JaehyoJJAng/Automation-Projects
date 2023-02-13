@@ -13,21 +13,26 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     
     # Crawl Data List
     data_list : List[List[Dict[str,Union[str,int,float]]]] = coupang.run()
-            
+
+    # Empty html_main_text
+    html_main_text : str = ''
+    for x in data_list:
+        for data in x:              
+            # Main Text
+            print(data,'\n')
+            # html_main_text += f"<a href='{}' target='_blank'><div class='image main'><img src='{}' alt='' /></div></a><p><h2>{rank}위: {}</h2><b>가격 : {}원</b></>"
+
     # Title
-    html_title : str = f'오늘의 {"자전거"}'
+    html_title : str = f'오늘의 {coupang.keyword}'
     
     # Product Name
-    html_prod_name : str = f'오늘의 {"자전거"}'
+    html_prod_name : str = f'오늘의 {coupang.keyword}'
     
     # Date
     html_today : str = datetime.now().strftime('%Y년 %m월 %d일')
     
     # Sub Text
-    html_sub_text : str  = f'{html_today} 오늘의 {"자전거"} 인기상품 Top10 입니다.'
-    
-    # Main Text
-    html_main_text : str = f"<p>{'test' * 30}</p>"
+    html_sub_text : str  = f'{html_today} 오늘의 {coupang.keyword} 인기상품 Top30 입니다'
     
     # HTML
     html : str = f"""
@@ -46,18 +51,14 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
-
 		<!-- Wrapper -->
 			<div id="wrapper">
-
 				<!-- Header -->
 					<header id="header">
 						<a href="index.html" class="logo">Massively</a>
 					</header>
-
 				<!-- Main -->
 					<div id="main">
-
 						<!-- Post -->
 							<section class="post">
 								<header class="major">
@@ -65,18 +66,14 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
 									<h1>{html_prod_name}</h1>
 									<p>{html_sub_text}</p>
 								</header>
-								<div class="image main"><img src="images/pic01.jpg" alt="" /></div>
 								{html_main_text}
 							</section>
 					</div>
-
 				<!-- Copyright -->
 					<div id="copyright">
 						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
 					</div>
-
 			</div>
-
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
@@ -85,13 +82,12 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-
 	</body>
 </html>"""
     
     # Text Write To File
-    with open(os.path.join(file_path,file_name),'w') as fp:
-        fp.write(html)
+    # with open(os.path.join(file_path,file_name),'w') as fp:
+    #     fp.write(html)
 
 def main():
     # Create Coupang Instance
