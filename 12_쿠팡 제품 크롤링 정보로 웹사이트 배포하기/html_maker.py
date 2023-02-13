@@ -19,8 +19,7 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     for x in data_list:
         for data in x:              
             # Main Text
-            print(data,'\n')
-            # html_main_text += f"<a href='{}' target='_blank'><div class='image main'><img src='{}' alt='' /></div></a><p><h2>{rank}위: {}</h2><b>가격 : {}원</b></>"
+            html_main_text += f"<a href='{data['link']}' target='_blank'><div class='image main'><img src='{data['thumbnail']}' alt='' /></div></a><p><h2>{data['prod_count']}위: {data['title']}</h2><b>가격 : {data['price']}원</b></>"
 
     # Title
     html_title : str = f'오늘의 {coupang.keyword}'
@@ -86,8 +85,8 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
 </html>"""
     
     # Text Write To File
-    # with open(os.path.join(file_path,file_name),'w') as fp:
-    #     fp.write(html)
+    with open(os.path.join(file_path,file_name),'w') as fp:
+        fp.write(html)
 
 def main():
     # Create Coupang Instance
