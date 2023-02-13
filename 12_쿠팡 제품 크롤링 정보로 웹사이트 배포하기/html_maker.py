@@ -19,7 +19,7 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     for x in data_list:
         for data in x:              
             # Main Text
-            html_main_text += f"<a href='{data['link']}' target='_blank'><div class='image main'><img src='{data['thumbnail']}' alt='' /></div></a><p><h2>{data['prod_count']}위: {data['title']}</h2><b>가격 : {data['price']}원</b>평점 : {data['rating']}</b>리뷰 수 : {data['reviews']}</b></>"
+            html_main_text += f"<a href='{data['link']}' target='_blank'><div class='image main'><img src='{data['thumbnail']}' alt='' /></div></a><p><h2>{data['prod_count']}위: {data['title']}</h2><b>가격 : {data['price']}원<b><br>평점 : {data['rating']}<br></b>리뷰 수 : {data['reviews']}</b><br></p>"
 
     # Title
     html_title : str = f'오늘의 {coupang.keyword}'
