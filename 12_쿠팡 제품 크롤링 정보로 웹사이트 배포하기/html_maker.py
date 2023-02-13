@@ -16,7 +16,7 @@ def html_maker(file_name:str,file_path:str)-> None:
     html_prod_name : str = f'오늘의 {"자전거"}'
     
     # Date
-    html_today : str = datetime.now().strftime('%Y%m%d')
+    html_today : str = datetime.now().strftime('%Y년 %m월 %d일')
     
     # Sub Text
     html_sub_text : str  = f'{html_today} 오늘의 {"자전거"} 인기상품 Top10 입니다.'
@@ -85,7 +85,7 @@ def html_maker(file_name:str,file_path:str)-> None:
 </html>"""
     
     # Text Write To File
-    with open(os.path.join(file_path,file_name)) as fp:
+    with open(os.path.join(file_path,file_name),'w') as fp:
         fp.write(html)
 
 def main():
