@@ -1,14 +1,19 @@
 from datetime import datetime
+from src.main import Coupang
+from typing import Dict,List,Union
 import os
 
 def create_dir(file_path:str):
     if not os.path.exists(file_path):
         os.mkdir(file_path)    
 
-def html_maker(file_name:str,file_path:str)-> None:
+def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     # Create Directory
     create_dir(file_path=file_path)
     
+    # Crawl Data List
+    data_list : List[List[Dict[str,Union[str,int,float]]]] = coupang.run()
+            
     # Title
     html_title : str = f'오늘의 {"자전거"}'
     
@@ -89,10 +94,17 @@ def html_maker(file_name:str,file_path:str)-> None:
         fp.write(html)
 
 def main():
+    # Create Coupang Instance
+    coupang : Coupang = Coupang()
+    
+    # File Name
     file_name : str = 'index.html'
+    
+    # File Path
     file_path : str = 'html5up-massively'
     
-    html_maker(file_name=file_name,file_path=file_path)
+    # Create New Html
+    html_maker(file_name=file_name,file_path=file_path,coupang=coupang)
 
 if __name__ == '__main__':
     main()    
