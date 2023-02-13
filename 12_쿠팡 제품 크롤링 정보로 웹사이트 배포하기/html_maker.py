@@ -2,6 +2,7 @@ from datetime import datetime
 from src.main import Coupang
 from typing import Dict,List,Union
 import os
+import paramiko
 
 def create_dir(file_path:str):
     if not os.path.exists(file_path):
@@ -88,18 +89,32 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     with open(os.path.join(file_path,file_name),'w') as fp:
         fp.write(html)
 
+def sftp_to_gcp(p_key:str,host:str,user:str,file_name:str):
+	p_key : paramiko.RSAKey = paramiko.RSAKey.from_private_key_file(p_key)
+	conn : paramiko.SSHClient = paramiko.SSHClient()
+	conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	conn.connect(hostname=host,username=user, pkey = p_key )
+
+	sftp : paramiko.SFTPClient = conn.open_sftp()
+	sftp.put(file_name,'/home/wogy12395/github/docker-projects/35_쿠팡 제품 크롤링 정보로 웹사이트 배포하기(Nginx)/myweb/index.html')
+	sftp.close()
+	conn.close()    
+
 def main():
     # Create Coupang Instance
     coupang : Coupang = Coupang()
     
-    # File Name
-    file_name : str = 'index.html'
-    
     # File Path
-    file_path : str = 'html5up-massively'
+    file_path : str = '/Users/jaehyolee/git/Inflearn-실습으로 끝장내는 파이썬 자동화 프로젝트/12_쿠팡 제품 크롤링 정보로 웹사이트 배포하기/html5up-massively'
+            
+    # File Name
+    file_name : str = os.path.join(file_path,'index.html')
     
     # Create New Html
     html_maker(file_name=file_name,file_path=file_path,coupang=coupang)
+    
+    # Copy ./html5up-massively/index.html File To GCP/myweb/index.html
+    sftp_to_gcp(p_key='/Users/jaehyolee/.ssh/rsa-gcp-key',host='',user='',file_name=file_name)
 
 if __name__ == '__main__':
     main()    
