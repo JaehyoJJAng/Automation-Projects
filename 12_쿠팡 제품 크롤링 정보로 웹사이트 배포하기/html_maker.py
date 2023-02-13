@@ -2,6 +2,7 @@ from datetime import datetime
 from src.main import Coupang
 from typing import Dict,List,Union
 import os
+import environ
 import paramiko
 
 def create_dir(file_path:str):
@@ -89,16 +90,35 @@ def html_maker(file_name:str,file_path:str,coupang:Coupang)-> None:
     with open(os.path.join(file_path,file_name),'w') as fp:
         fp.write(html)
 
-def sftp_to_gcp(p_key:str,host:str,user:str,file_name:str):
-	p_key : paramiko.RSAKey = paramiko.RSAKey.from_private_key_file(p_key)
-	conn : paramiko.SSHClient = paramiko.SSHClient()
-	conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	conn.connect(hostname=host,username=user, pkey = p_key )
+def get_env(env_file:str)-> environ.Env:
+    env : environ.Env = environ.Env(DEBUG=(bool,False))
+    environ.Env.read_env(env_file)
+    return env    
 
-	sftp : paramiko.SFTPClient = conn.open_sftp()
-	sftp.put(file_name,'/home/wogy12395/github/docker-projects/35_쿠팡 제품 크롤링 정보로 웹사이트 배포하기(Nginx)/myweb/index.html')
-	sftp.close()
-	conn.close()    
+def sftp_to_gcp(p_key:str,host:str,user:str,file_name:str)-> None:
+    try:
+        # Private Key
+        key : paramiko.RSAKey = paramiko.RSAKey.from_private_key_file(p_key)
+
+        # Create SSHClient Instance
+        conn : paramiko.SSHClient = paramiko.SSHClient()
+        conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        conn.connect(hostname=host,username=user,pkey=key)
+
+        # Create SFTP instance
+        sftp : paramiko.SFTPClient = conn.open_sftp()
+        sftp.put(file_name,'/home/wogy12395/github/docker-projects/35_쿠팡 제품 크롤링 정보로 웹사이트 배포하기(Nginx)/myweb/index.html')	
+
+        # sftp close
+        sftp.close()
+
+        # conn close
+        conn.close()
+        
+        # Print
+        print('파일 복사에 성공하였습니다!')
+    except Exception as e:
+        print(f'파일 복사 실패!\n:{e}')
 
 def main():
     # Create Coupang Instance
@@ -113,8 +133,11 @@ def main():
     # Create New Html
     html_maker(file_name=file_name,file_path=file_path,coupang=coupang)
     
+    # Get Env
+    env : environ.Env = get_env(env_file='ssh.env')
+    
     # Copy ./html5up-massively/index.html File To GCP/myweb/index.html
-    sftp_to_gcp(p_key='/Users/jaehyolee/.ssh/rsa-gcp-key',host='',user='',file_name=file_name)
+    sftp_to_gcp(p_key='/Users/jaehyolee/.ssh/rsa-gcp-key',host=env('host'),user=env('user'),file_name=file_name)
 
 if __name__ == '__main__':
     main()    
