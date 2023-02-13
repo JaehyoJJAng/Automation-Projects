@@ -79,6 +79,9 @@ class Coupang:
                     thumbnail = 'https:' + thumbnail.attrs['src']
                 else:
                     thumbnail = 'https:' + thumbnail.get('data-img-src')
+                    
+                # 이미지 크기 커스텀
+                thumbnail = thumbnail.replace('230x230ex','1000x1000ex')
             
             # Get Title
             title = prods[idx].select_one('div.name')
