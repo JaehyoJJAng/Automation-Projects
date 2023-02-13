@@ -117,9 +117,6 @@ class Coupang:
                 # isdigit() 함수 활용하여 '()' 제거 (숫자만 추출)
                 reviews = ''.join([num for num in reviews.text.strip() if num.isdigit()])
             
-            # Download Thumbnail
-            self.download_thumbnail(thumbnail=thumbnail,title=title)
-            
             # Save Data
             data_dict['prod_count'] = self.prod_count
             data_dict['title'] = title
@@ -138,19 +135,6 @@ class Coupang:
         
         # Return data
         return data_list
-    
-    def download_thumbnail(self,thumbnail:str,title:str):
-        save_path : str = os.path.abspath(self.keyword)
-        file_name : str = thumbnail.split('/')[-1]
-        if not os.path.exists(save_path):
-            os.mkdir(save_path)
-        
-        with rq.Session() as session: 
-            with session.get(url=thumbnail) as response:
-                if response.ok:
-                    with open(os.path.join(save_path,file_name),'wb') as fp:
-                        fp.write(response.content)
-                        print(f'이미지 저장완료!\t-> {os.path.join(save_path,file_name)}')
     
     def input_page(self)-> int:
         os.system('clear')
