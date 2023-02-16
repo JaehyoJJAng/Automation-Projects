@@ -26,7 +26,7 @@ class Coupang:
     
     def run(self)-> List[List[Dict[str,Union[str,int,float]]]]:
         # Set URLS
-        urls : List[str] = [f'https://www.coupang.com/np/search?q={rep.quote_plus(self.keyword)}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=rocket,rocket_wow,coupang_global&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page={self.page_count}&rocketAll=true&searchIndexingToken=1=6&backgroundColor=' for page in range(1,self.page_count + 1)]
+        urls : List[str] = [f'https://www.coupang.com/np/search?q={rep.quote_plus(self.keyword)}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page={page}&rocketAll=false&searchIndexingToken=1=6&backgroundColor=' for page in range(1,self.page_count + 1)]
         
         # Session
         with rq.Session() as session:
